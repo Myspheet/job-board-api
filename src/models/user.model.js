@@ -2,18 +2,14 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const config = require('../config/config');
+
 const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
         required: 'Your email is required',
         trim: true
-    },
-
-    username: {
-        type: String,
-        unique: true,
-        required: 'Your username is required',
     },
 
     password: {
@@ -34,16 +30,37 @@ const UserSchema = new mongoose.Schema({
         max: 100
     },
 
-    bio: {
-        type: String,
-        required: false,
+    userRole: {
+        type: Number,
+        required: true,
+        default: 10,
         max: 255
+    },
+
+    verified: {
+        type: Boolean,
+        default: false
     },
 
     profileImage: {
         type: String,
         required: false,
         max: 255
+    },
+
+    userToken: {
+        type: String,
+        required: false
+    },
+
+    tokenExpires: {
+        type: String,
+        required: false
+    },
+
+    passwordChangedAt: {
+        type: [Date],
+        required: false
     }
 }, {timestamps: true});
 
@@ -82,7 +99,7 @@ UserSchema.methods.generateJWT = function() {
         lastName: this.lastName,
     };
 
-    return jwt.sign(payload, process.env.JWT_SECRET, {
+    return jwt.sign(payload, config.JWT_SECRET, {
         expiresIn: parseInt(expirationDate.getTime() / 1000, 10)
     });
 };

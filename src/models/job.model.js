@@ -10,7 +10,9 @@ const JobSchema = mongoose.Schema({
         type: String,
         required: [true, 'Job must have a description'],
         trim: true
-    }
+    },
+    skills: [],
+    applicants: [],
 });
 
 module.exports = mongoose.model('Job', JobSchema);

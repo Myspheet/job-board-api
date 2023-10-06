@@ -11,7 +11,6 @@ router.get('/', (req, res) => {
 
 router.post('/register', [
     body('email').isEmail().withMessage('Enter a valid email address'),
-    body('username').not().isEmpty().withMessage('You username is required'),
     body('password').not().isEmpty().isLength({min: 6}).withMessage('Must be at least 6 chars long'),
     body('firstName').not().isEmpty().withMessage('You first name is required'),
     body('lastName').not().isEmpty().withMessage('You last name is required')
@@ -21,5 +20,16 @@ router.post("/login", [
     body('email').isEmail().withMessage('Enter a valid email address'),
     body('password').not().isEmpty(),
 ], validate, Auth.login);
+
+router.post("/passwordReset",[
+    body('email').isEmail().withMessage('Enter a valid email address')
+], validate, Auth.requestResetToken);
+
+router.get('/verify/:id/:token', Auth.verifyEmail);
+
+router.patch("/passwordReset",[
+    body('email').isEmail().withMessage('Enter a valid email address'),
+    body('token').not().isEmpty().withMessage('Enter a valid token')
+], validate, Auth.resetPassword);
 
 module.exports = router;
